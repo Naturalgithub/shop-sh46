@@ -68,20 +68,22 @@ export default {
           url: 'http://localhost:8888/api/private/v1/login',
           data: this.form
         }).then(res => {
-          const { msg, status } = res.data.meta
+          const { meta, data } = res.data
           // console.log(msg)
-          if (status === 200) {
-            console.log(msg)
+          if (meta.status === 200) {
+            console.log(meta.msg)
             this.$message({
-              message: msg,
+              message: meta.msg,
               type: 'success'
             })
             // console.log(this.$router)
+            console.log(data)
+            localStorage.setItem('token', data.token)
 
             this.$router.push({ name: 'index' })
           } else {
-            console.log(msg)
-            this.$message.error(msg)
+            console.log(meta.msg)
+            this.$message.error(meta.msg)
           }
         })
       })
