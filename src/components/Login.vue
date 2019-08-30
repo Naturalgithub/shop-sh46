@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 export default {
   data () {
     return {
@@ -60,33 +60,58 @@ export default {
       this.$refs.form.resetFields()
     },
 
-    login () {
-      this.$refs.form.validate(isVlid => {
-        if (!isVlid) return
-        axios({
-          method: 'post',
-          url: 'http://localhost:8888/api/private/v1/login',
-          data: this.form
-        }).then(res => {
-          const { meta, data } = res.data
-          // console.log(msg)
-          if (meta.status === 200) {
-            console.log(meta.msg)
-            this.$message({
-              message: meta.msg,
-              type: 'success'
-            })
-            // console.log(this.$router)
-            console.log(data)
-            localStorage.setItem('token', data.token)
-
-            this.$router.push({ name: 'index' })
-          } else {
-            console.log(meta.msg)
-            this.$message.error(meta.msg)
-          }
-        })
-      })
+    async login () {
+      try {
+        await this.$refs.form.validate()
+        const { meta, data } = await this.$axios.post('login', this.form)
+        // console.log(res)
+        if (meta.status === 200) {
+          console.log(meta.msg)
+          this.$message({
+            message: meta.msg,
+            type: 'success'
+          })
+          // console.log(this.$router)
+          console.log(meta)
+          console.log(data)
+          localStorage.setItem('token', data.token)
+          // this.$message.success(meta.msg)
+          this.$router.push({ name: 'index' })
+        } else {
+          console.log(meta.msg)
+          this.$message.error(meta.msg)
+        }
+      } catch (e) {
+        console.log(e)
+        console.log('校验失败')
+      }
+      // this.$refs.form.validate(isVlid => {
+      //   if (!isVlid) return
+      //   axios({
+      //     method: 'post',
+      //     url: 'login',
+      //     data: this.form
+      //   }).then(res => {
+      //     const { meta, data } = res.data
+      //     // console.log(msg)
+      //     if (meta.status === 200) {
+      //       console.log(meta.msg)
+      //       this.$message({
+      //         message: meta.msg,
+      //         type: 'success'
+      //       })
+      //       // console.log(this.$router)
+      //       console.log(meta)
+      //       console.log(data)
+      //       localStorage.setItem('token', data.token)
+      //       // this.$message.success(meta.msg)
+      //       this.$router.push({ name: 'index' })
+      //     } else {
+      //       console.log(meta.msg)
+      //       this.$message.error(meta.msg)
+      //     }
+      //   })
+      // })
     }
   }
 }
